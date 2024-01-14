@@ -1,4 +1,4 @@
-import express from "express";
+const express = require("express");
 
 const app = express();
 
@@ -24,8 +24,28 @@ app.get("/", (request, response) => {
   response.send("<h2>Hello World!</h2>");
 });
 
-app.get("/api/notes", (request, response) => {
-  response.json(notes);
+// GET REQUEST
+app.get("/api/notes/:id", (request, response) => {
+  //User requests a specific note via its id
+  const id = Number(request.params.id);
+  const note = notes.find((note) => note.id === id); // Searching notes array to find object with matching id
+  if (note) {
+    response.json(note); // Sending back the found note to the client as a response
+  } else {
+    response.status(404).end();
+  }
+});
+
+app.delete("/api/notes/:id", (request, response) => {
+  const id = Number(request.params.id);
+  notes = notes.filter((note) => note.id !== id);
+  response.status(204).end();
+});
+
+app.post("/api/notes", (request, response) => {
+  const note = request.body;
+  console.log(note);
+  response.json(note);
 });
 
 const PORT = 3001;
